@@ -19,6 +19,10 @@ class OfficeSectionDivision extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 255,
             ],
+            'code' => [
+                'type' => 'VARCHAR',
+                'constraint' => 20,
+            ],
             'description' => [
                 'type' => 'TEXT',
                 'null' => true,

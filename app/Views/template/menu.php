@@ -48,7 +48,9 @@
              </p>
            </a>
          </li>
-         <li class="nav-item">
+         <?php if (auth()->user()->inGroup('user')) : ?>
+           <li class="nav-header">MASTER FILE</li>
+           <li class="nav-item">
            <a href="<?= base_url() ?>users" class="nav-link">
              <i class="nav-icon fas fa-list"></i>
              <p>
@@ -56,8 +58,6 @@
              </p>
            </a>
          </li>
-         <?php if (auth()->user()->inGroup('admin')) : ?>
-           <li class="nav-header">MASTER FILE</li>
            <li class="nav-item">
              <a href="<?= base_url() ?>authors" class="nav-link">
                <i class="nav-icon fas fa-user"></i>

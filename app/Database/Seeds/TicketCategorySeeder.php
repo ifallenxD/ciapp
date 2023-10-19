@@ -27,6 +27,6 @@ class TicketCategorySeeder extends Seeder
             ],
         ];
 
-        $this->db->table('ticket_category')->insertBatch($data);
+        $this->db->table('ticket_categories')->insertBatch($data);
     }
 }

@@ -1,0 +1,69 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Controllers\BaseController;
+use CodeIgniter\HTTP\Response;
+
+class OfficeSectionDivisionController extends BaseController
+{
+    public function index()
+    {
+        $office_section_division = new \App\Models\OfficeSectionDivision();
+        $totaloffice_section_division = $office_section_division->select('id')->countAllResults();
+
+        $data = [
+            'total_office_section_division' => $totaloffice_section_division
+        ];
+        return view('offices/index',$data);
+    }
+
+    public function getall()
+    {
+        $office_section_division = new \App\Models\OfficeSectionDivision();
+        $all_office_section_division = $office_section_division->findAll();
+        $data = [
+            'status' => 'success',
+            'data' => $all_office_section_division,
+            'message' => 'Successfully retrieved all office section division.',
+            'token' => csrf_hash()
+
+        ];
+        return $this->response->setJSON($data)->setStatusCode(200);
+    }
+
+    public function insert(){
+        $office_section_division = new \App\Models\OfficeSectionDivision();
+        $data = $this->request->getPost();
+
+        if (!$office_section_division->validate($data)) {
+            $data = $this->request->getJSON();
+            $response = array(
+                "status" => "error",
+                "message" => $office_section_division->errors(),
+                "token" => csrf_hash()
+            );
+            return $this->response->setJSON($response)->setStatusCode(Response::HTTP_BAD_REQUEST);
+        }
+
+        $office_section_division->insert($data);
+
+        if ($office_section_division->errors()) {
+            $response = [
+                'status' => 'error',
+                'data' => $office_section_division->errors(),
+                'message' => 'Failed to insert office section division.',
+                'token' => csrf_hash()
+            ];
+            return $this->response->setJSON($response)->setStatusCode(Response::HTTP_BAD_REQUEST);
+        } else {
+            $response = [
+                'status' => 'success',
+                'data' => $data,
+                'message' => 'Successfully inserted office section division.',
+                'token' => csrf_hash()
+            ];
+            return $this->response->setJSON($response)->setStatusCode(Response::HTTP_CREATED);
+        }
+    }
+}
