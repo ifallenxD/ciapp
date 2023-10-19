@@ -11,77 +11,98 @@ class UserController extends BaseController
         $user = new \App\Models\User();
         $totalusers = $user->select('id')->countAllResults();
         $totalactiveusers = $user->select('id')->where('active', 1)->countAllResults();
-        $users = $user->findAll();
+        $users = $user->select("users.*, auth_groups_users.group, auth_identities.secret")
+        ->join('auth_groups_users', 'auth_groups_users.user_id = users.id')
+        ->join('auth_identities', 'auth_identities.user_id = users.id')
+        ->orderBy('users.id', 'DESC')
+        ->findAll();
+
+        //replace secret array key in $users with email
+        foreach($users as $key => $user){
+            $users[$key]['email'] = $user['secret'];
+            unset($users[$key]['secret']);
+        }
 
         $data = [
             'totalusers' => $totalusers,
             'totalactiveusers' => $totalactiveusers,
             'users' => $users
         ];
-    
+        
         return view('user/index', $data);
     }
 
+    public function update(){
+        $user = new \App\Models\User();
+        $request = service('request');
+        $postData = $request->getPost();
+
+        $data = [
+            'username' => $postData['username'],
+            'status' => $postData['status'],
+            'status_message' => $postData['status_message'],
+            'active' => $postData['active'],
+            'secret' => $postData['email'],
+            'group' => $postData['group'],
+        ];
+
+        $user->update($postData['id'], $data);
+
+        $response = array(
+            "status" => "success",
+            "message" => "User updated successfully",
+            "token" => csrf_hash() // New token hash
+        );
+
+        return $this->response->setJSON($response);
+    }
+
+    public function delete(){
+        $user = new \App\Models\User();
+        $request = service('request');
+        $postData = $request->getPost();
+
+        $user->delete($postData['id']);
+
+        $response = array(
+            "status" => "success",
+            "message" => "User deleted successfully",
+            "token" => csrf_hash() // New token hash
+        );
+
+        return $this->response->setJSON($response);
+    }
+
+
+
+
+
+
+    
     public function getall()
     {
         $user = new \App\Models\User();
-        // $request = service('request');
-        // $postData = $request->getPost();
-    
-
-        // ## Read value
-        // $draw = $postData['draw'];
-        // $start = $postData['start'];
-        // $rowperpage = $postData['length']; // Rows display per page
-        // $searchValue = $post6y77777yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyData['search']['value']; // Search value
 
         ## Total number of records without filtering   
         $totalRecords = $user->select('id')->countAllResults();
 
-        ## Total number of records with filtering
-        // $totalRecordwithFilter = $user->select('*')
-        // ->like('username', $searchValue)
-        // ->orLike('status', $searchValue)
-        // ->orLike('status_message', $searchValue)
-        // ->orLike('active', $searchValue)
-        // ->countAllResults();
-
-        // ## Fetch records
-        // $users = $user->select('id, username, status, status_message, active')
-        // ->like('username', $searchValue)
-        // ->orLike('status', $searchValue)
-        // ->orLike('status_message', $searchValue)
-        // ->orLike('active', $searchValue)
-        // ->orderBy('id', 'DESC')
-        // ->limit($rowperpage, $start)
-        // ->findAll();
-
-        $users = $user->findAll();
+        // $users = $user->findAll();
+        $users = $user->select("users.*, auth_groups_users.group, auth_identities.secret")
+        ->join('auth_groups_users', 'auth_groups_users.user_id = users.id')
+        ->join('auth_identities', 'auth_identities.user_id = users.id')
+        ->orderBy('users.id', 'DESC')
+        ->findAll();
         
-        // $data = array();
-
-        // foreach($users as $user){
-        //     $data[] = array(
-        //         "id" => $user['id'],
-        //         "username" => $user['username'],
-        //         "status" => $user['status'],
-        //         "status_message" => $user['status_message'],
-        //         "active" => $user['active'],
-        //     );
-        // }
+        //replace secret array key in $users with email
+        foreach($users as $key => $user){
+            $users[$key]['email'] = $user['secret'];
+            unset($users[$key]['secret']);
+        }
 
         $response = array(
             "data" => $users,
             "token" => csrf_hash() // New token hash
         );
-
-        // $response = array(
-        //     "draw" => intval($draw),
-        //     "recordsTotal" => $totalRecords,
-        //     "recordsFiltered" => $totalRecordwithFilter,
-        //     "data" => $data,
-        //     "token" => csrf_hash() // New token hash
-        // );
 
         return $this->response->setJSON($response);
     }

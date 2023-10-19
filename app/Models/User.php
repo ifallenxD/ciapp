@@ -18,6 +18,8 @@ class User extends Model
         'status',
         'status_message',
         'active',
+        'secret', //email
+        'group',
     ];
 
     // Dates

@@ -1,6 +1,7 @@
 <?= $this->extend('template/admin_template'); ?>
 
 <?= $this->section('content'); ?>
+
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -56,8 +57,8 @@
                         <tr>
                             <th>ID</th>
                             <th>Username</th>
-                            <th>Status</th>
-                            <th>Status Message</th>
+                            <th>Email</th>
+                            <th>Role</th>
                             <th>Active</th>
                             <th>Action</th>
                         </tr>
@@ -80,14 +81,17 @@
 
 <?= $this->section('pagescripts'); ?>
 <script>
+    var data =  <?=json_encode($users) ?>;
     $(function() {
        var usersTable = $("#usersTable").DataTable({
             responsive: true,
             processing: true,
-            serverSide: true,
             ajax: {
-                url: "<?= base_url() ?>users/list",
-                type: "POST",
+                url: "<?=base_url()?>users/list",
+                method: "GET",
+                dataSrc: function (json) {
+                    return json.data;
+                }
             },
             columns: [{
                 data: "id"
@@ -96,13 +100,20 @@
                 data: "username"
             },
             {
-                data: "status"
+                data: "email"
             },
             {
-                data: "status_message"
+                data: "group"
             },
             {
-                data: "active"
+                data: "active",
+                render: function(data, type, row) {
+                    if (data == 1) {
+                        return '<span class="badge badge-success">Active</span>';
+                    } else {
+                        return '<span class="badge badge-danger">Inactive</span>';
+                    }
+                }
             },
             {
                 data: null,
