@@ -34,10 +34,9 @@ class OfficeSectionDivisionController extends BaseController
 
     public function insert(){
         $office_section_division = new \App\Models\OfficeSectionDivision();
-        $data = $this->request->getPost();
-
+        $data = $this->request->getJSON();
+     
         if (!$office_section_division->validate($data)) {
-            $data = $this->request->getJSON();
             $response = array(
                 "status" => "error",
                 "message" => $office_section_division->errors(),
@@ -45,6 +44,13 @@ class OfficeSectionDivisionController extends BaseController
             );
             return $this->response->setJSON($response)->setStatusCode(Response::HTTP_BAD_REQUEST);
         }
+
+        //change keys OfficeID to id, OfficeName to office_section_division, OfficeCode to code, OfficeDescription to description
+        $data = [
+            'office_section_division' => $data->OfficeName,
+            'code' => $data->OfficeCode,
+            'description' => $data->OfficeDescription,
+        ]; 
 
         $office_section_division->insert($data);
 
@@ -59,11 +65,12 @@ class OfficeSectionDivisionController extends BaseController
         } else {
             $response = [
                 'status' => 'success',
-                'data' => $data,
                 'message' => 'Successfully inserted office section division.',
                 'token' => csrf_hash()
             ];
             return $this->response->setJSON($response)->setStatusCode(Response::HTTP_CREATED);
         }
+
+        
     }
 }

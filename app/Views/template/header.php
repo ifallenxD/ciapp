@@ -31,4 +31,18 @@
   <link rel="stylesheet" href="<?= base_url() ?>public/plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
   <link rel="stylesheet" href="<?= base_url() ?>public/plugins/datatables-buttons/css/buttons.bootstrap4.min.css" />
 </head>
+<style>
+  /* remove validation icons */
+.form-control.is-invalid, .was-validated .form-control:invalid {
+    background-image: none !important;
+    border-color: #ced4da;
+    padding-right: 0.75em;
+}
+
+.form-control.is-valid, .was-validated .form-control:valid {
+    background-image: none !important;
+    border-color: #ced4da;
+    padding-right: 0.75em;
+}
+</style>
 

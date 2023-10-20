@@ -56,25 +56,22 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class="needs-validation" novalidate>
+                    <form>
                         <input type="hidden" name="OfficeID" id="OfficeID" />
                         <div class="form-group">
                             <label for="title">Office Name *</label>
                             <input type="text" class="form-control" name="OfficeName" id="OfficeName" placeholder="Name" required />
-                            <div class="valid-feedback">Looks good!</div>
-                            <div class="invalid-feedback">Please enter an Office.</div>
+                            <div id="OfficeNameFeedback"></div>
                         </div>
                         <div class="form-group">
                             <label for="title">Office Code *</label>
                             <input type="text" class="form-control" name="OfficeCode" id="OfficeCode" placeholder="Code" required />
-                            <div class="valid-feedback">Looks good!</div>
-                            <div class="invalid-feedback">Please enter an Office.</div>
+                            <div id="OfficeCodeFeedback"></div>
                         </div>
                         <div class="form-group">
                             <label for="description">Description *</label>
                             <input type="text" class="form-control" name="OfficeDescription" id="OfficeDescription" placeholder="Description" required />
-                            <div class="valid-feedback">Looks good!</div>
-                            <div class="invalid-feedback">Please enter a Description.</div>
+                            <div id="OfficeDescriptionFeedback"></div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">
@@ -153,28 +150,55 @@
                         method: "POST",
                         url: "<?= base_url() ?>offices",
                         data: jsondata,
-                        success: function(result, textStatus, jqXHR) {
-                            console.log(textStatus + ": " + jqXHR.status);
-                            $(document).Toasts("create", {
-                                class: "bg-success",
-                                title: "Success",
-                                body: "Records Created Successfuly.",
-                                autohide: true,
-                                delay: 3000,
-                            });
-                            clearform();
-                            usersTable.ajax.reload();
-                            $("#modalAddOffice").modal("hide");
+                        success: function(response) {
+                            if (response.status == "success") {
+                                $(document).Toasts("create", {
+                                    class: "bg-success",
+                                    title: "Success",
+                                    body: "Records Created Successfuly.",
+                                    autohide: true,
+                                    delay: 3000,
+                                });
+                                clearform();
+                                usersTable.ajax.reload();
+                                $("#modalAddOffice").modal("hide");
+                            }          
                         },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            console.log(textStatus + ": " + jqXHR.status + " " + errorThrown);
-                            $(document).Toasts("create", {
-                                class: "bg-danger",
-                                title: "Error",
-                                body: "Records Was Not Created.",
-                                autohide: false,
-                                delay: 3000,
-                            });
+                        error: function(response) {
+                            //trigger validations
+                            let errors = response.responseJSON.data;
+                            // check if OfficeName has error message 
+                            if (errors.office_section_division) {
+                                $("#OfficeName").addClass("border border-danger");
+                                $("#OfficeNameFeedback").html('<small class="text text-danger">' + errors.office_section_division + "</small>");
+                            } else {
+                                $("#OfficeName").removeClass("border border-danger");
+                                $("#OfficeNameFeedback").html("");
+                            }
+                            // check if OfficeCode has error message
+                            if (errors.code) {
+                                $("#OfficeCode").addClass("border border-danger");
+                                $("#OfficeCodeFeedback").html('<small class="text text-danger">' + errors.code + "</small>");
+                            } else {
+                                $("#OfficeCode").removeClass("border border-danger");
+                                $("#OfficeCodeFeedback").html("");
+                            }
+                            // check if OfficeDescription has error message
+                            if (errors.description) {
+                                $("#OfficeDescription").addClass("border border-danger");
+                                $("#OfficeDescriptionFeedback").html('<small class="text text-danger">' + errors.description + "</small>");
+                            } else {
+                                $("#OfficeDescription").removeClass("border border-danger");
+                                $("#OfficeDescriptionFeedback").html("");
+                            }
+
+                            // $(document).Toasts("create", {
+                            //     class: "bg-danger",
+                            //     title: "Error",
+                            //     body: "Records Was Not Created.",
+                            //     autohide: true,
+                            //     delay: 3000,
+                            // });
                         },
                     });
                 } else {
@@ -198,6 +222,8 @@
 
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
+                            //trigger validations
+
                             console.log(textStatus + ": " + jqXHR.status + " " + errorThrown);
                             $(document).Toasts("create", {
                                 class: "bg-danger",
@@ -219,6 +245,16 @@
         $("#OfficeName").val("");
         $("#OfficeCode").val("");
         $("#OfficeDescription").val("");
+        removeValidation();
+    }
+
+    function removeValidation() {
+        $("#OfficeName").removeClass("border border-danger");
+        $("#OfficeNameFeedback").html("");
+        $("#OfficeCode").removeClass("border border-danger");
+        $("#OfficeCodeFeedback").html("");
+        $("#OfficeDescription").removeClass("border border-danger");
+        $("#OfficeDescriptionFeedback").html("");
     }
 
 

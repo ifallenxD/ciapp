@@ -17,9 +17,14 @@ $routes->set404Override();
 $routes->get('dashboard', 'DashboardController::index', ['filter' => 'auth']);
 $routes->get('users', 'UserController::index');
 $routes->get('users/list', 'UserController::getall');
-$routes->get('offices', 'OfficeSectionDivisionController::index');
-$routes->get('offices/list', 'OfficeSectionDivisionController::getall');
-$routes->resource('offices', ['controller' => 'OfficeSectionDivisionController', 'filter' => 'auth'], ['except' => 'insert']);
+//group offices routes with auth filter 
+$routes->group('offices', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'OfficeSectionDivisionController::index');
+    $routes->get('list', 'OfficeSectionDivisionController::getall');
+    $routes->post('/', 'OfficeSectionDivisionController::insert');
+    $routes->put('(:num)', 'OfficeSectionDivisionController::update/$1');
+    $routes->delete('(:num)', 'OfficeSectionDivisionController::delete/$1');
+});
 
 $routes->get('authors/list', 'AuthorController::getall');
 
