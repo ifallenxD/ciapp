@@ -14,6 +14,7 @@ class OfficeSectionDivision extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
+        'id',
         'office_section_division',
         'code',
         'description',

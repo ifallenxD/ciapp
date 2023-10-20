@@ -18,13 +18,22 @@ $routes->get('dashboard', 'DashboardController::index', ['filter' => 'auth']);
 $routes->get('users', 'UserController::index');
 $routes->get('users/list', 'UserController::getall');
 //group offices routes with auth filter 
-$routes->group('offices', ['filter' => 'auth'], function ($routes) {
+$routes->group('offices', function ($routes) {
     $routes->get('/', 'OfficeSectionDivisionController::index');
     $routes->get('list', 'OfficeSectionDivisionController::getall');
     $routes->post('/', 'OfficeSectionDivisionController::insert');
-    $routes->put('(:num)', 'OfficeSectionDivisionController::update/$1');
+    $routes->put('/', 'OfficeSectionDivisionController::update');
     $routes->delete('(:num)', 'OfficeSectionDivisionController::delete/$1');
 });
+
+$routes->group('tickets', function ($routes) {
+    $routes->get('/', 'TicketController::index');
+    $routes->get('list', 'TicketController::getall');
+    $routes->post('/', 'TicketController::insert');
+    $routes->put('/', 'TicketController::update');
+    $routes->delete('(:num)', 'TicketController::delete/$1');
+});
+
 
 $routes->get('authors/list', 'AuthorController::getall');
 

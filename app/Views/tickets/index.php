@@ -1,7 +1,6 @@
 <?= $this->extend('template/admin_template'); ?>
 
 <?= $this->section('content'); ?>
-
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -17,15 +16,30 @@
         <div class="small-box bg-gradient-light">
             <div class="card-header">
                 <!-- <h1 class="m-0"></h1> -->
-                <h3 class="card-title">Manage Offices</h3>
+                <h3 class="card-title">Manage Support Tickets</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
                 <div class="row d-flex justify-content-end">
-                    <button class="btn btn-primary" id="btn-add-office">Add Office</button>
+                    <button class="btn btn-primary" id="btn-add-ticket">Add Ticket</button>
                 </div>
                 <br>
                 <!-- <div class="row"> -->
+                    <table id="ticketsTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Office/Section/Division</th>
+                                <th>Severity</th>
+                                <th>Description</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                     <table id="officesTable" class="table table-bordered table-striped">
                         <thead>
                             <tr>
@@ -47,26 +61,42 @@
 
     <!-- /.row (main row) -->
     <!-- Modal Add Office -->
-    <div class="modal fade" id="modalAddOffice" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal fade" id="modalAddTicket" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">New Office</h5>
+                    <h5 class="modal-title">Ticket Details</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <form id="formAdd">
+
                         <div class="form-group">
-                            <label for="title">Office Name *</label>
-                            <input type="text" class="form-control" name="AddOfficeName" id="AddOfficeName" placeholder="Name" required />
-                            <div id="OfficeNameFeedback"></div>
+                            <label for="title">First Name *</label>
+                            <input type="text" class="form-control" name="AddFirstName" id="AddFirstName" placeholder="First Name" required />
+                            <div id="AddFirstNameFeedback"></div>
                         </div>
                         <div class="form-group">
-                            <label for="title">Office Code *</label>
-                            <input type="text" class="form-control" name="AddOfficeCode" id="AddOfficeCode" placeholder="Code" required />
-                            <div id="OfficeCodeFeedback"></div>
+                            <label for="title">Last Name *</label>
+                            <input type="text" class="form-control" name="AddLastName" id="AddLastName" placeholder="Last Name" required />
+                            <div id="AddLastNameFeedback"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="title">Email*</label>
+                            <input type="text" class="form-control" name="AddEmail" id="AddEmail" placeholder="Email" required />
+                            <div id="AddEmailFeedback"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Office/Section/Division *</label>
+                            <select class="form-control" name="AddOfficeSectionDivision" id="AddOfficeSectionDivision" required>
+                                <option value="">Select Office/Section/Division</option>
+                                <?php foreach ($offices as $office) : ?>
+                                    <option value="<?= $office['id']?>"><?= $office['office_section_division'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div id="OfficeSectionDivisionFeedback"></div>
                         </div>
                         <div class="form-group">
                             <label for="description">Description *</label>
@@ -173,8 +203,8 @@
             lengthMenu: [10, 20, 50, 100],
         });
 
-        $("#btn-add-office").on("click", function() {
-            $("#modalAddOffice").modal("show");
+        $("#btn-add-ticket").on("click", function() {
+            $("#modalAddTicket").modal("show");
         });
 
         $("#officesTable tbody").on("click", "#editRow", function() {
@@ -244,7 +274,7 @@
                             });
                             clearformAddOffice();
                             usersTable.ajax.reload();
-                            $("#modalAddOffice").modal("hide");
+                            $("#modalAddTicket").modal("hide");
                         }          
                     },
                     error: function(response) {

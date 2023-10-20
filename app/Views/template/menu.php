@@ -48,27 +48,27 @@
              </p>
            </a>
          </li>
+          <li class="nav-item">
+            <a href="<?= base_url() ?>tickets" class="nav-link">
+              <i class="nav-icon fas fa-ticket-alt"></i>
+              <p>
+                Tickets
+              </p>
+            </a>
+          </li>
          <?php if (auth()->user()->inGroup('user')) : ?>
-           <li class="nav-header">MASTER FILE</li>
-           <li class="nav-item">
-           <a href="<?= base_url() ?>users" class="nav-link">
-             <i class="nav-icon fas fa-list"></i>
-             <p>
-               Users
-             </p>
-           </a>
-         </li>
-           <li class="nav-item">
-             <a href="<?= base_url() ?>authors" class="nav-link">
-               <i class="nav-icon fas fa-user"></i>
-               <p>
-                 Authors
-               </p>
-             </a>
-           </li>
+          <li class="nav-header">MASTER FILE</li>
+            <li class="nav-item">
+              <a href="<?= base_url() ?>offices" class="nav-link">
+                <i class="nav-icon fa fa-building"></i>
+                <p>
+                  Offices
+                </p>
+              </a>
+            </li>
            <li class="nav-header">ADMIN</li>
            <li class="nav-item">
-             <a href="<?= base_url() ?>user" class="nav-link">
+             <a href="<?= base_url() ?>users" class="nav-link">
                <i class="nav-icon fas fa-user"></i>
                <p>
                  User Management

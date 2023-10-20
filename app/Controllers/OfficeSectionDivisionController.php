@@ -47,9 +47,9 @@ class OfficeSectionDivisionController extends BaseController
 
         //change keys OfficeID to id, OfficeName to office_section_division, OfficeCode to code, OfficeDescription to description
         $data = [
-            'office_section_division' => $data->OfficeName,
-            'code' => $data->OfficeCode,
-            'description' => $data->OfficeDescription,
+            'office_section_division' => $data->AddOfficeName,
+            'code' => $data->AddOfficeCode,
+            'description' => $data->AddOfficeDescription,
         ]; 
 
         $office_section_division->insert($data);
@@ -70,7 +70,68 @@ class OfficeSectionDivisionController extends BaseController
             ];
             return $this->response->setJSON($response)->setStatusCode(Response::HTTP_CREATED);
         }
+    }
 
+    public function update(){
         
+        $office_section_division = new \App\Models\OfficeSectionDivision();
+        $data = $this->request->getJSON();
+        $id = $data->EditOfficeID;
+
+        if (!$office_section_division->validate($data)) {
+            $response = array(
+                "status" => "error",
+                "message" => $office_section_division->errors(),
+                "token" => csrf_hash()
+            );
+            return $this->response->setJSON($response)->setStatusCode(Response::HTTP_BAD_REQUEST);
+        }
+
+        //change keys OfficeID to id, OfficeName to office_section_division, OfficeCode to code, OfficeDescription to description
+        $data = [
+            'office_section_division' => $data->EditOfficeName,
+            'code' => $data->EditOfficeCode,
+            'description' => $data->EditOfficeDescription,
+        ]; 
+            
+        $office_section_division->update($id, $data);
+        
+        if ($office_section_division->errors()) {
+            $response = [
+                'status' => 'error',
+                'data' => $office_section_division->errors(),
+                'message' => 'Failed to update office section division.',
+                'token' => csrf_hash()
+            ];
+            return $this->response->setJSON($response)->setStatusCode(Response::HTTP_BAD_REQUEST);
+        } else {
+            $response = [
+                'status' => 'success',
+                'message' => 'Successfully updated office section division.',
+                'token' => csrf_hash()
+            ];
+            return $this->response->setJSON($response)->setStatusCode(Response::HTTP_CREATED);
+        }
+    }
+
+    public function delete($id){
+        $office_section_division = new \App\Models\OfficeSectionDivision();
+        $office_section_division->delete($id);
+        if ($office_section_division->errors()) {
+            $response = [
+                'status' => 'error',
+                'data' => $office_section_division->errors(),
+                'message' => 'Failed to delete office section division.',
+                'token' => csrf_hash()
+            ];
+            return $this->response->setJSON($response)->setStatusCode(Response::HTTP_BAD_REQUEST);
+        } else {
+            $response = [
+                'status' => 'success',
+                'message' => 'Successfully deleted office section division.',
+                'token' => csrf_hash()
+            ];
+            return $this->response->setJSON($response)->setStatusCode(Response::HTTP_CREATED);
+        }
     }
 }
