@@ -37,7 +37,7 @@ class Tickets extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 255,
             ],
-            'office/section/division_id' => [
+            'office_section_division_id' => [
                 'type' => 'INT',
                 'constraint' => 11,
                 'unsigned' => true,
@@ -63,6 +63,7 @@ class Tickets extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
                 'unsigned' => true,
+                'null' => true,
                 // 'references' => 'users(id)',
             ],
             'created_at' => [

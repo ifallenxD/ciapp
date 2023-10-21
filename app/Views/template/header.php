@@ -47,5 +47,9 @@
     border-color: #ced4da;
     padding-right: 0.75em;
 }
+
+.highseverity {
+  background: #FF8800; /* Set the background color you want */
+}
 </style>
 

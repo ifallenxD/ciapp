@@ -26,7 +26,7 @@ $routes->group('offices', function ($routes) {
     $routes->delete('(:num)', 'OfficeSectionDivisionController::delete/$1');
 });
 
-$routes->group('tickets', function ($routes) {
+$routes->group('tickets', ['filter' => 'auth'] ,function ($routes) {
     $routes->get('/', 'TicketController::index');
     $routes->get('list', 'TicketController::getall');
     $routes->post('/', 'TicketController::insert');

@@ -61,17 +61,17 @@
                         <div class="form-group">
                             <label for="title">Office Name *</label>
                             <input type="text" class="form-control" name="AddOfficeName" id="AddOfficeName" placeholder="Name" required />
-                            <div id="OfficeNameFeedback"></div>
+                            <div id="AddOfficeNameFeedback"></div>
                         </div>
                         <div class="form-group">
                             <label for="title">Office Code *</label>
                             <input type="text" class="form-control" name="AddOfficeCode" id="AddOfficeCode" placeholder="Code" required />
-                            <div id="OfficeCodeFeedback"></div>
+                            <div id="AddOfficeCodeFeedback"></div>
                         </div>
                         <div class="form-group">
                             <label for="description">Description *</label>
                             <input type="text" class="form-control" name="AddOfficeDescription" id="AddOfficeDescription" placeholder="Description" required />
-                            <div id="OfficeDescriptionFeedback"></div>
+                            <div id="AddOfficeDescriptionFeedback"></div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">
@@ -248,6 +248,7 @@
                         }          
                     },
                     error: function(response) {
+                        console.log(response.responseJSON.data);
                         //trigger validations
                         let errors = response.responseJSON.data;
                         // check if OfficeName has error message 

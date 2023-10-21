@@ -52,7 +52,7 @@ class OfficeSectionDivisionController extends BaseController
             'description' => $data->AddOfficeDescription,
         ]; 
 
-        $office_section_division->insert($data);
+        $office_section_division->insert($data)->setStatusCode(Response::HTTP_CREATED);
 
         if ($office_section_division->errors()) {
             $response = [
