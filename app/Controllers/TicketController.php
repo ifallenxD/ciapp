@@ -78,13 +78,34 @@ class TicketController extends BaseController
 
     public function getall(){
         $ticket = new \App\Models\Ticket();
-        $all_tickets = $ticket
-        -> select('tickets.id, tickets.first_name, tickets.last_name, tickets.email, tickets.description, ticket_states.state as ticket_state, ticket_states.id as ticket_state_id, office_section_divisions.office_section_division as office_section_division, office_section_divisions.id as office_section_division_id, ticket_categories.ticket_category as ticket_category, ticket_categories.id as ticket_category_id, users.username as created_by, tickets.created_at, tickets.modified_at, tickets.remarks')
-        -> join('ticket_states', 'ticket_states.id = tickets.ticket_state_id')
-        -> join('office_section_divisions', 'office_section_divisions.id = tickets.office_section_division_id')
-        -> join('ticket_categories', 'ticket_categories.id = tickets.ticket_category_id')
-        -> join('users', 'users.id = tickets.created_by')
-        ->findAll();
+
+        $users = auth()->getProvider();
+        $current_user_id = auth()->user()->id;
+
+        $current_user = $users->findById($current_user_id);
+        // get the group name of the current user
+        $current_user_group = $current_user->getGroups();
+
+        if ($current_user_group[0] == 'admin') {
+            $all_tickets = $ticket
+            -> select('tickets.id, tickets.first_name, tickets.last_name, tickets.email, tickets.description, ticket_states.state as ticket_state, ticket_states.id as ticket_state_id, office_section_divisions.office_section_division as office_section_division, office_section_divisions.id as office_section_division_id, ticket_categories.ticket_category as ticket_category, ticket_categories.id as ticket_category_id, users.username as created_by, tickets.created_at, tickets.modified_at, tickets.remarks')
+            -> join('ticket_states', 'ticket_states.id = tickets.ticket_state_id')
+            -> join('office_section_divisions', 'office_section_divisions.id = tickets.office_section_division_id')
+            -> join('ticket_categories', 'ticket_categories.id = tickets.ticket_category_id')
+            -> join('users', 'users.id = tickets.created_by')
+            ->findAll();
+        }  else {
+            $all_tickets = $ticket
+            -> select('tickets.id, tickets.first_name, tickets.last_name, tickets.email, tickets.description, ticket_states.state as ticket_state, ticket_states.id as ticket_state_id, office_section_divisions.office_section_division as office_section_division, office_section_divisions.id as office_section_division_id, ticket_categories.ticket_category as ticket_category, ticket_categories.id as ticket_category_id, users.username as created_by, tickets.created_at, tickets.modified_at, tickets.remarks')
+            -> join('ticket_states', 'ticket_states.id = tickets.ticket_state_id')
+            -> join('office_section_divisions', 'office_section_divisions.id = tickets.office_section_division_id')
+            -> join('ticket_categories', 'ticket_categories.id = tickets.ticket_category_id')
+            -> join('users', 'users.id = tickets.created_by')
+            -> where('users.id', $current_user_id)
+            ->findAll();
+        }
+
+        
 
         $data = [
             'status' => 'success',

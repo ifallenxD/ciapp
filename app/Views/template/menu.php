@@ -56,7 +56,7 @@
               </p>
             </a>
           </li>
-         <?php if (auth()->user()->inGroup('user')) : ?>
+         <?php if (auth()->user()->inGroup('admin')) : ?>
           <li class="nav-header">MASTER FILE</li>
             <li class="nav-item">
               <a href="<?= base_url() ?>offices" class="nav-link">
@@ -76,7 +76,7 @@
              </a>
            </li>
            <li class="nav-item">
-             <a href="<?= base_url() ?>role" class="nav-link">
+             <a href="<?= base_url() ?>roles" class="nav-link">
                <i class="nav-icon fas fa-key"></i>
                <p>
                  Role Management

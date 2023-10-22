@@ -15,10 +15,9 @@ $routes->set404Override();
 
 
 $routes->get('dashboard', 'DashboardController::index', ['filter' => 'auth']);
-$routes->get('users', 'UserController::index');
-$routes->get('users/list', 'UserController::getall');
+
 //group offices routes with auth filter 
-$routes->group('offices', function ($routes) {
+$routes->group('offices', ['filter' => 'groupfilter:admin'], function ($routes) {
     $routes->get('/', 'OfficeSectionDivisionController::index');
     $routes->get('list', 'OfficeSectionDivisionController::getall');
     $routes->post('/', 'OfficeSectionDivisionController::insert');
@@ -34,15 +33,25 @@ $routes->group('tickets', ['filter' => 'auth'] ,function ($routes) {
     $routes->delete('(:num)', 'TicketController::delete/$1');
 });
 
+$routes->group('users', ['filter' => 'groupfilter:admin'], function ($routes) {
+    $routes->get('/', 'UserController::index');
+    $routes->get('list', 'UserController::getall');
+    $routes->get('allinfo', 'UserController::getallinfolive');
+    $routes->post('/', 'UserController::insert');
+    $routes->put('/', 'UserController::update');
+    $routes->put('changepassword', 'UserController::changePassword');
+    $routes->put('(:num)', 'UserController::toggleUserActivityStatus/$1');
+    $routes->put('toggleUserStatus', 'UserController::toggleUserStatus');
+    $routes->delete('(:num)', 'UserController::delete/$1');
+});
 
-$routes->get('authors/list', 'AuthorController::getall');
-
-// $routers->resource('users', ['controller' => 'UserController']);
-$routes->resource('authors', ['controller' => 'AuthorController']);
-//add put route for authors controller to update author data by id 
-$routes->put('authors/(:num)', 'AuthorController::update/$1');
-
-$routes->resource('posts', ['controller' => 'PostController']);
+$routes->group('roles', ['filter' => 'groupfilter:admin'], function ($routes) {
+    $routes->get('/', 'AuthGroupUserController::index');
+    $routes->get('list', 'AuthGroupUserController::getall');
+    $routes->post('/', 'AuthGroupUserController::insert');
+    $routes->put('(:num)', 'AuthGroupUserController::changeRole/$1');
+    $routes->delete('(:num)', 'AuthGroupUserController::delete/$1');
+});
 
 
 service('auth')->routes($routes);

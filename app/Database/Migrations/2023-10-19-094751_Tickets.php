@@ -79,7 +79,7 @@ class Tickets extends Migration
         $this->forge->addField($fields);
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('ticket_state_id', 'ticket_states', 'id');
-        $this->forge->addForeignKey('office/section/division_id', 'office_section_divisions', 'id');
+        $this->forge->addForeignKey('office_section_division_id', 'office_section_divisions', 'id');
         $this->forge->addForeignKey('ticket_category_id', 'ticket_categories', 'id');
         $this->forge->addForeignKey('created_by', 'users', 'id');
         $this->forge->addForeignKey('modified_by', 'users', 'id');

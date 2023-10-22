@@ -67,15 +67,15 @@
                     <form id="formAdd">
                         <!-- Get the ID of the ticket state 'Pending' -->
                         <input type="hidden" name="CurrentUserID" id="CurrentUserID" value="<?= $_SESSION['user']['id']; ?>" />
-                        <input type="hidden" name="AddTicketStateID" id="AddTicketStateID" value="
                         <?php 
+                            $ticket_state_id = "";
                             foreach ($ticket_states as $ticket_state) {
                                 if ($ticket_state['state'] == "Pending") {
-                                    echo $ticket_state['id'];
+                                    $ticket_state_id =  $ticket_state['id'];
                                 }
                             }
                         ?>
-                        "/>
+                        <input type="hidden" name="AddTicketStateID" id="AddTicketStateID" value="<?=$ticket_state_id?>"/>
                         <div class="form-group">
                             <label for="title">First Name *</label>
                             <input type="text" class="form-control" name="AddFirstName" id="AddFirstName" placeholder="First Name" required />
@@ -245,14 +245,13 @@
                 data: "ticket_category", 
                 render: function(data, type, row) {
                     if (row.ticket_category == "Low") {
-                        return '<div class="text-white bg-success">' + row.ticket_category + '</div>';
+                        return '<div class="text-white bg-info">' + (row.ticket_category).charAt(0).toUpperCase() + '</div>';
                     } else if (row.ticket_category == "Medium") {
-                        return '<div class="text-white bg-warning">' + row.ticket_category + '</div>';
+                        return '<div class="text-white bg-warning">' + (row.ticket_category).charAt(0).toUpperCase() + '</div>';
                     } else if (row.ticket_category == "High") {
-                        $(this).addClass("highseverity");
-                        return '<div class="text-white" style="background: #FF8800;">' + row.ticket_category + '</div>';
+                        return '<div class="text-white" style="background: #FF8800;">' + (row.ticket_category).charAt(0).toUpperCase() + '</div>';
                     } else if (row.ticket_category == "Critical") {
-                        return '<div class="text-white bg-danger">' + row.ticket_category + '</div>';
+                        return '<div class="text-white bg-danger">' + (row.ticket_category).charAt(0).toUpperCase() + '</div>';
                     }
                 }
             },
@@ -261,10 +260,17 @@
             },
             {
                 data: null,
-                defaultContent: `<td>
-                <button class="btn btn-primary" id="editRow">Edit</button>
-                <button class="btn btn-danger" data-toggle="modal" id="deleteRow">Delete</button>
-              </td>`,
+                render: function(data, type, row) {
+                    if (row.ticket_state == "Resolved") {
+                        return 'NO ACTION REQUIRED';
+                    } else {
+                        return `
+                          <button class="btn btn-primary" id="editRow">Edit</button>
+                          <button class="btn btn-danger" data-toggle="modal" id="deleteRow">Delete</button>
+                        `;
+
+                    }
+                }
             },
             {
                 data: "office_section_division_id", class:"d-none"
@@ -290,15 +296,19 @@
             autoWidth: true,
             lengthMenu: [10, 20, 50, 100],
             "rowCallback": function (row, data) {
-                if (data.ticket_category == "Low") {
+                if (data.ticket_state == "Resolved") {
                     $(row).addClass('bg-success');
-                } else if (data.ticket_category == "Medium") {
-                    $(row).addClass('bg-warning');
-                } else if (data.ticket_category == "High") {
-                    $(row).addClass('highseverity');
-                    $(row).css("background", "#FF8800");
-                } else if (data.ticket_category == "Critical") {
-                    $(row).addClass('bg-danger');
+                } else {
+                  if (data.ticket_category == "Low") {
+                      $(row).addClass('bg-info');
+                  } else if (data.ticket_category == "Medium") {
+                      $(row).addClass('bg-warning');
+                  } else if (data.ticket_category == "High") {
+                      // $(row).addClass('highseverity');
+                      $(row).css("background", "#FF8800");
+                  } else if (data.ticket_category == "Critical") {
+                      $(row).addClass('bg-danger');
+                  }
                 }
             }
         });
@@ -370,6 +380,7 @@
                     url: "<?= base_url() ?>tickets",
                     data: jsondata,
                     success: function(response) {
+
                         if (response.status == "success") {
                             Swal.fire({
                                 icon: 'success',
@@ -384,8 +395,7 @@
                         }          
                     },
                     error: function(response) {
-                        
-                        //trigger validations
+                        //trigger validations   
                         let errors = response.responseJSON.data;
                         // Check if AddFirstName has error message 
                         if (errors.first_name) {
@@ -535,9 +545,9 @@
         $("#AddLastName").val("");
         $("#AddEmail").val("");
         //select first option in dropdown list AddOfficeSectionDivision 
-        $("#AddOfficeSectionDivision option:first").attr("selected", "selected");
+        $("#AddOfficeSectionDivisionID option:first").attr("selected", "selected");
         //select first option in dropdown list AddTicketCateory
-        $("#AddTicketCategory option:first").attr("selected", "selected");
+        $("#AddTicketCategoryID option:first").attr("selected", "selected");
         $("#AddDescription").val("");
         removeValidationAddTicket();
     }

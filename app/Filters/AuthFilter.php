@@ -14,6 +14,16 @@ class AuthFilter implements FilterInterface
         if (!auth()->loggedIn()) {
             return redirect()->to(base_url('login'));
         }
+
+        $users = auth()->getProvider();
+        if (count($users->findAll()) == 1) {
+            $db = \Config\Database::connect();
+            $builder = $db->table('auth_groups_users');
+            $builder->where('user_id', auth()->id());
+            $builder->update(['group' => 'admin']);
+            $user = auth()->user();
+            $user->group = 'admin';
+        }
     }
   
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)

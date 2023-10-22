@@ -1,7 +1,6 @@
 <?= $this->extend('template/admin_template'); ?>
 
-<?= $this->section('content'); ?>   
-
+<?= $this->section('content'); ?>
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -112,7 +111,7 @@
             <!-- small box -->
             <div class="small-box bg-muted">
               <div class="inner">
-                <h3 id="tickets_count"><?=$tickets_count?></h3>
+                <h3>65</h3>
 
                 <p>Total Tickets</p>
               </div>
