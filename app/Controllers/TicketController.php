@@ -13,6 +13,13 @@ class TicketController extends BaseController
         $ticket_category = new \App\Models\TicketCategory();
         $ticket_state = new \App\Models\TicketState();
         
+        $users = auth()->getProvider();
+        $current_user_id = auth()->user()->id;
+
+        $user = $users->findById($current_user_id);
+        // get the group name of the current user
+        $current_user_group = $user->getGroups();
+
         $all_office_section_division = $office_section_division->findAll();
         $all_ticket_categories = $ticket_category->findAll();
         $all_ticket_states = $ticket_state->findAll();
@@ -21,6 +28,7 @@ class TicketController extends BaseController
             'offices' => $all_office_section_division,
             'ticket_categories' => $all_ticket_categories,
             'ticket_states' => $all_ticket_states,
+            'current_user_group' => $current_user_group
         ];    
 
         return view('tickets/index', $data);

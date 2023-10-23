@@ -99,7 +99,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="formEdit">
-                        <input type="text" name="EditOfficeID" id="EditOfficeID" />
+                        <input type="hidden" name="EditOfficeID" id="EditOfficeID" />
                         <div class="form-group">
                             <label for="title">Office Name *</label>
                             <input type="text" class="form-control" name="EditOfficeName" id="EditOfficeName" placeholder="Name" required />

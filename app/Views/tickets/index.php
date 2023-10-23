@@ -161,22 +161,27 @@
                         </div>
                         <div class="form-group">
                             <label for="title">First Name</label>
-                            <input type="text" class="form-control" name="EditFirstName" id="EditFirstName" placeholder="First Name" required />    
+                            <input type="text" class="form-control" name="EditFirstName" id="EditFirstName" placeholder="First Name" readonly />    
                             <div id="EditFirstNameFeedback"></div>
                         </div>    
                         <div class="form-group">
                             <label for="title">Last Name</label>
-                            <input type="text" class="form-control" name="EditLastName" id="EditLastName" placeholder="Last Name" required />
+                            <input type="text" class="form-control" name="EditLastName" id="EditLastName" placeholder="Last Name" readonly />
                             <div id="EditLastNameFeedback"></div>
                         </div>
                         <div class="form-group">
                             <label for="title">Email</label>
-                            <input type="text" class="form-control" name="EditEmail" id="EditEmail" placeholder="Email" required />
+                            <input type="text" class="form-control" name="EditEmail" id="EditEmail" placeholder="Email" readonly />
                             <div id="EditEmailFeedback"></div>
                         </div>
                         <div class="form-group">
                             <label for="description">Office/Section/Division *</label>
-                            <select class="form-control" name="EditOfficeSectionDivisionID" id="EditOfficeSectionDivisionID" required>
+                            <select class="form-control" name="EditOfficeSectionDivisionIDDisabled" id="EditOfficeSectionDivisionIDDisabled" disabled>
+                                <?php foreach ($offices as $office) : ?>
+                                    <option value="<?= $office['id']?>"><?= $office['office_section_division'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <select class="form-control" name="EditOfficeSectionDivisionID" id="EditOfficeSectionDivisionID" hidden>
                                 <?php foreach ($offices as $office) : ?>
                                     <option value="<?= $office['id']?>"><?= $office['office_section_division'] ?></option>
                                 <?php endforeach; ?>
@@ -185,7 +190,12 @@
                         </div>
                         <div class="form-group">
                             <label for="description">Severity *</label>
-                            <select class="form-control" name="EditTicketCategoryID" id="EditTicketCategoryID" required>
+                            <select class="form-control" name="EditTicketCategoryIDDisabled" id="EditTicketCategoryIDDisabled" disabled>
+                                <?php foreach ($ticket_categories as $ticket_category) : ?>
+                                    <option value="<?= $ticket_category['id']?>"><?= $ticket_category['ticket_category'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <select class="form-control" name="EditTicketCategoryID" id="EditTicketCategoryID" hidden>
                                 <?php foreach ($ticket_categories as $ticket_category) : ?>
                                     <option value="<?= $ticket_category['id']?>"><?= $ticket_category['ticket_category'] ?></option>
                                 <?php endforeach; ?>
@@ -194,7 +204,7 @@
                         </div>
                         <div class="form-group">
                             <label for="description">Description *</label>
-                            <textarea class="form-control" name="EditDescription" id="EditDescription" placeholder="Description" required rows="5"></textarea>
+                            <textarea class="form-control" name="EditDescription" id="EditDescription" placeholder="Description" readonly rows="5"></textarea>
                             <div id="EditDescription"></div>
                         </div>
                         <div class="modal-footer">
@@ -264,11 +274,18 @@
                     if (row.ticket_state == "Resolved") {
                         return 'NO ACTION REQUIRED';
                     } else {
-                        return `
-                          <button class="btn btn-primary" id="editRow">Edit</button>
-                          <button class="btn btn-danger" data-toggle="modal" id="deleteRow">Delete</button>
-                        `;
-
+                        if ('<?=$current_user_group[0]?>' == 'admin'){
+                          return `
+                            <button class="btn btn-primary" id="editRow">Edit</button>
+                            <button class="btn btn-danger" data-toggle="modal" id="deleteRow">Delete</button>
+                          `;
+                      } else {
+                        if (row.ticket_state == "Pending"){
+                            return ` <button class="btn btn-danger" data-toggle="modal" id="deleteRow">Delete</button>`;
+                        } else {
+                            return 'N/A';
+                        }
+                      }
                     }
                 }
             },
@@ -327,6 +344,8 @@
             $("#EditRemarks").val(data.remarks);
             // Select the option from EditOfficeSectionDivisionID with a value of data.office_section_division_id
             $("#EditOfficeSectionDivisionID option[value='" + data.office_section_division_id + "']").attr('selected', 'selected');
+            $("#EditOfficeSectionDivisionIDDisabled option[value='" + data.office_section_division_id + "']").attr('selected', 'selected');
+            $("#EditTicketCategoryIDDisabled option[value='" + data.ticket_category_id + "']").attr('selected', 'selected');
             $("#EditTicketCategoryID option[value='" + data.ticket_category_id + "']").attr('selected', 'selected');
             $("#EditTicketStateID option[value='" + data.ticket_state_id + "']").attr('selected', 'selected');
             $("#modalEditTicket").modal("show");

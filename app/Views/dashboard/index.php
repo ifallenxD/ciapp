@@ -311,11 +311,14 @@
                     if (row.ticket_state == "Resolved") {
                         return 'NO ACTION REQUIRED';
                     } else {
-                        return `
-                          <button class="btn btn-primary" id="editRow">Edit</button>
-                          <button class="btn btn-danger" data-toggle="modal" id="deleteRow">Delete</button>
-                        `;
-
+                      if ('<?=$current_user_group[0]?>' == 'admin'){
+                          return `
+                            <button class="btn btn-primary" id="editRow">Edit</button>
+                            <button class="btn btn-danger" data-toggle="modal" id="deleteRow">Delete</button>
+                          `;
+                      } else {
+                        return 'N/A';
+                      }
                     }
                 }
             },
